@@ -254,16 +254,46 @@ MCPs (extern)             → context7 (Docs), playwright (Browser)
 
 ## Skills (Highlights)
 
+**Development — Frontend:**
+| Skill | Was es tut |
+|-------|-----------|
+| `/frontend-architecture` | Component Patterns, State Management, Data Flow |
+| `/ui-audit` | Accessibility, Responsiveness, Performance, Konsistenz |
+| `/design-system` | Design Tokens, Component Library, Theming |
+| `/responsive-design` | Mobile-First, Breakpoints, Container Queries, Touch |
+
+**Development — Testing & Debugging:**
+| Skill | Was es tut |
+|-------|-----------|
+| `/tdd` | Red-Green-Refactor Workflow |
+| `/bug-pipeline` | Autonome Bug-Fix Pipeline, parallele Agents, max 3 Retries |
+| `/systematic-debugging` | Hypothesen-basiertes Debugging |
+
+**Development — Audit:**
+| Skill | Was es tut |
+|-------|-----------|
+| `/audit` | Bug + Security + Test + Plan-Verification |
+| `/audit-bug` | Nur Bug-Suche |
+| `/audit-security` | Nur Security Check |
+
+**Development — Git & Review:**
+| Skill | Was es tut |
+|-------|-----------|
+| `/review` | Code Review mit Security-Check |
+| `/changelog-generator` | Changelog aus Git History generieren |
+| `/doc-sync` | Docs automatisch mit Code-Stand synchronisieren |
+
+**Development — Workflow:**
+| Skill | Was es tut |
+|-------|-----------|
+| `/orchestrate` | Multi-Agent Dispatch mit Scope-Validation und Test-Gates |
+| `/using-git-worktrees` | Isolierte Workspaces für Feature-Arbeit |
+
+**Productivity:**
 | Skill | Was es tut |
 |-------|-----------|
 | `/wrapup` | Session-Ende: Tests → Commit → Push → HANDOFF.md → Summary |
 | `/handoff` | Nur HANDOFF.md, kein Commit/Push |
-| `/bug-pipeline` | Autonome Bug-Fix Pipeline, parallele Agents, max 3 Retries, Revert bei Failure |
-| `/orchestrate` | Multi-Agent Dispatch mit Scope-Validation und Test-Gates |
-| `/doc-sync` | Docs automatisch mit Code-Stand synchronisieren |
-| `/tdd` | Red-Green-Refactor Workflow |
-| `/review` | Code Review mit Security-Check |
-| `/audit` | Bug + Security + Test + Plan-Verification |
 | `/varlock` | Secret Protection (scannt .env, Git History, Code) |
 
 ---
@@ -284,11 +314,18 @@ claude-code-starter-kit/
 |   +-- usage-patterns.md       Upfront Constraints, Session Continuity
 |
 |-- skills/              50+ Skills in 5 Kategorien
-|   |-- development/     23 Skills (TDD, Debugging, Audit, Architecture, Git, ...)
-|   |-- testing/          3 Skills (PICT, Browser-Testing, Website-Audit)
-|   |-- productivity/     5 Skills (Wrapup, Handoff, Kaizen, ...)
-|   |-- documents/        5 Skills (DOCX, XLSX, PDF, PPTX, EPUB)
-|   +-- utilities/       12 Skills (Varlock, Article Extractor, CSV, ...)
+|   |-- development/
+|   |   |-- frontend/       4 Skills (Architecture, UI-Audit, Design System, Responsive)
+|   |   |-- testing/        4 Skills (TDD, Debugging, Test-Fixing, Bug-Pipeline)
+|   |   |-- audit/          5 Skills (Full, Bug, Security, Test, Plan-Verification)
+|   |   |-- git/            3 Skills (Branch-Finish, Push, Changelog)
+|   |   |-- review/         3 Skills (Code Review, Verification, Doc-Sync)
+|   |   |-- architecture/   4 Skills (Software-Arch, Prompts, MCP-Builder, Skill-Creator)
+|   |   +-- workflow/       4 Skills (Orchestrate, Parallel Agents, Worktrees)
+|   |-- testing/            3 Skills (PICT, Browser-Testing, Website-Audit)
+|   |-- productivity/       5 Skills (Wrapup, Handoff, Kaizen, ...)
+|   |-- documents/          5 Skills (DOCX, XLSX, PDF, PPTX, EPUB)
+|   +-- utilities/         12 Skills (Varlock, Article Extractor, CSV, ...)
 |
 |-- agents/              20 Agents
 |   |-- engineering/     Backend, Frontend, DB, Architektur-Review, Performance
