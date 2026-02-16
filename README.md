@@ -50,7 +50,7 @@ Speichere es als docs/PRD.md
 
 Ohne PRD fehlt der Gesamtkontext. Claude baut Features die nicht zusammenpassen, wählt den falschen Stack, oder übersieht Abhängigkeiten.
 
-### 3. Plan Mode
+### 3. Plan Mode (Aktivieren mit SHIFT + TAB)
 
 Statt direkt coden zu lassen — erst planen lassen:
 
