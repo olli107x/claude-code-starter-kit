@@ -1,6 +1,6 @@
 ---
 name: performance-profiler
-description: Profiles application performance focusing on main thread blocking, memory management, startup time, rendering efficiency, async bottlenecks, and database query optimization. Tailored for React/FastAPI/Supabase web apps.
+description: Profiles application performance focusing on main thread blocking, memory management, startup time, rendering efficiency, async bottlenecks, and database query optimization. Adapt checks to your project's stack.
 allowed-tools: Glob,Grep,Read,LS,Bash,Task
 ---
 

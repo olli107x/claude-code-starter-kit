@@ -1,6 +1,6 @@
 ---
 name: architecture-reviewer
-description: Reviews codebase architecture for separation of concerns, SOLID principles, scalability, maintainability, and design pattern usage. Tailored for React/FastAPI/Supabase stack. Use when making architectural decisions or reviewing system design.
+description: Reviews codebase architecture for separation of concerns, SOLID principles, scalability, maintainability, and design pattern usage. Use when making architectural decisions or reviewing system design.
 allowed-tools: Glob,Grep,Read,LS,Task
 ---
 

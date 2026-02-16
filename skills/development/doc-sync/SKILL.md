@@ -33,7 +33,7 @@ Read all documentation files that might need updates:
 
 ```bash
 # Find all docs
-ls PROGRESS.md README.md HANDOFF.md SOUL.md 2>/dev/null
+ls PROGRESS.md README.md HANDOFF.md 2>/dev/null
 ls docs/ 2>/dev/null
 ```
 
