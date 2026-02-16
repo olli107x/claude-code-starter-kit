@@ -1,3 +1,9 @@
+---
+name: audit-test
+description: Test coverage audit. Checks test existence, coverage requirements (80%+), test quality, edge cases, and test anti-patterns. Uses qa-engineer and api-tester agents.
+allowed-tools: Bash,Read,Glob,Grep,Task
+---
+
 # Test Audit Guidelines
 
 > **TRIGGER:** Teil des Full Audits oder manuell via `/audit-test`

@@ -1,3 +1,9 @@
+---
+name: audit
+description: Full code audit orchestration. Runs Bug, Security, Test, and Plan Verification audits in parallel, then produces a final report. Use after completing a plan or before important commits.
+allowed-tools: Bash,Read,Write,Edit,Glob,Grep,Task
+---
+
 # Audit Workflow Orchestration
 
 > **TRIGGER:** Automatisch nach Plan-Umsetzung, vor wichtigen Commits, oder manuell via `/audit`

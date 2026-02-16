@@ -273,7 +273,7 @@ MCPs (extern)             → context7 (Docs), playwright (Browser)
 ```
 claude-code-starter-kit/
 |
-|-- rules/              14 Regeln (immer aktiv)
+|-- rules/              8 Regeln (immer aktiv, ~5k Tokens)
 |   |-- coding-style.md        Immutability, File-Organisation, Naming
 |   |-- git-workflow.md         Conventional Commits, PR-Prozess
 |   |-- testing.md              TDD-Workflow, 80% Coverage
@@ -281,15 +281,10 @@ claude-code-starter-kit/
 |   |-- performance.md          Context Window, Model-Auswahl
 |   |-- agents.md               Agent-Delegation, Parallel Execution
 |   |-- critical-behaviors.md   Exclusions, Data Verify, Type Propagation
-|   |-- usage-patterns.md       Upfront Constraints, Session Continuity
-|   |-- audit-workflow.md       Audit-Orchestrierung
-|   |-- audit-bug.md            Bug-Audit Checkliste
-|   |-- audit-security.md       OWASP Top 10
-|   |-- audit-test.md           Test Coverage Audit
-|   +-- audit-plan-verification.md  Plan-Verifizierung
+|   +-- usage-patterns.md       Upfront Constraints, Session Continuity
 |
-|-- skills/              45+ Skills in 5 Kategorien
-|   |-- development/     18 Skills (TDD, Debugging, Architecture, Git, ...)
+|-- skills/              50+ Skills in 5 Kategorien
+|   |-- development/     23 Skills (TDD, Debugging, Audit, Architecture, Git, ...)
 |   |-- testing/          3 Skills (PICT, Browser-Testing, Website-Audit)
 |   |-- productivity/     5 Skills (Wrapup, Handoff, Kaizen, ...)
 |   |-- documents/        5 Skills (DOCX, XLSX, PDF, PPTX, EPUB)

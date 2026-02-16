@@ -1,3 +1,9 @@
+---
+name: audit-bug
+description: Bug audit checklist. Scans for exception handling issues, null safety, async problems, logic errors, resource leaks, and missing UI states. Uses debugger and brutal-critic agents.
+allowed-tools: Bash,Read,Glob,Grep,Task
+---
+
 # Bug Audit Guidelines
 
 > **TRIGGER:** Teil des Full Audits oder manuell via `/audit-bug`

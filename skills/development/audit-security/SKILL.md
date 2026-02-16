@@ -1,3 +1,9 @@
+---
+name: audit-security
+description: Security audit based on OWASP Top 10. Checks for injection, broken auth, sensitive data exposure, XSS, access control, misconfigurations, and insufficient logging.
+allowed-tools: Bash,Read,Glob,Grep,Task
+---
+
 # Security Audit Guidelines
 
 > **TRIGGER:** Teil des Full Audits oder manuell via `/audit-security`

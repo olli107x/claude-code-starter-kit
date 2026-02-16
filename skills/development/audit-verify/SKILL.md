@@ -1,3 +1,9 @@
+---
+name: audit-verify
+description: Plan verification audit. Checks each plan item for code existence, test coverage, and documentation. Runs after Bug/Security/Test audits and produces a final verdict.
+allowed-tools: Bash,Read,Glob,Grep,Task
+---
+
 # Plan Verification Audit Guidelines
 
 > **TRIGGER:** Letzter Schritt im Full Audit, nach Bug/Security/Test Audits
