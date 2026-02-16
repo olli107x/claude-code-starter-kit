@@ -227,6 +227,56 @@ NUR Backend-Änderungen.
 
 ---
 
+## Built-in Commands
+
+Claude Code hat eingebaute Slash-Commands. Tippe `/` in der CLI um alle zu sehen.
+
+**Session & Navigation:**
+
+| Command | Was es tut |
+|---------|-----------|
+| `/compact` | Context komprimieren — nutzen wenn Session lang wird |
+| `/clear` | Session komplett leeren, neu starten |
+| `/cost` | Token-Verbrauch und Kosten der aktuellen Session |
+| `/model` | Model wechseln (Sonnet, Opus, Haiku) |
+| `/resume` | Vorherige Session fortsetzen |
+| `/rewind` | Conversation + Code auf früheren Stand zurücksetzen |
+
+**Diagnose & Status:**
+
+| Command | Was es tut |
+|---------|-----------|
+| `/doctor` | Health-Check der Installation (Plugins, MCPs, Permissions) |
+| `/status` | Version, Model, Account, Connectivity |
+| `/context` | Context-Auslastung als Grid visualisieren |
+| `/insights` | Performance-Insights und Nutzungsstatistiken |
+| `/stats` | Tägliche Usage, Session History, Streaks |
+
+**Konfiguration:**
+
+| Command | Was es tut |
+|---------|-----------|
+| `/plugins` | Plugins durchsuchen, installieren, verwalten |
+| `/mcp` | MCP-Server verwalten, OAuth-Auth |
+| `/skills` | Installierte Skills anzeigen |
+| `/permissions` | Tool-Permissions anzeigen/ändern |
+| `/config` | Settings öffnen |
+| `/memory` | CLAUDE.md Memory-Files bearbeiten |
+| `/init` | Neues Projekt mit CLAUDE.md initialisieren |
+
+**Weitere:**
+
+| Command | Was es tut |
+|---------|-----------|
+| `/vim` | Vim-Mode aktivieren |
+| `/export` | Conversation als Datei exportieren |
+| `/copy` | Letzte Antwort in Clipboard kopieren |
+| `/tasks` | Background-Tasks anzeigen |
+
+**Tipp:** `/plugins` ist der schnellste Weg, um die offiziellen Anthropic-Plugins zu finden — z.B. `frontend-design` für UI-Entwicklung oder `feature-dev` für geführte Feature-Entwicklung.
+
+---
+
 ## Architektur des Kits
 
 | Konzept | Beschreibung | Ort |
