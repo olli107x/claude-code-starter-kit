@@ -104,28 +104,84 @@ Prüft automatisch: Bugs, Security, Test Coverage, Plan-Vollständigkeit.
 
 ---
 
-## Agent Teams (Fortgeschritten)
+## Subagents vs. Agent Teams
 
-Agent Teams = mehrere Claude Code Instanzen, die **parallel** arbeiten. Extrem mächtig für große Features — aber **tokenintensiv**.
+Zwei grundverschiedene Konzepte, die oft verwechselt werden.
 
-### Wann Agent Teams Sinn machen
+### Subagent (Task Tool) — Fire & Forget
 
-| Situation | Agent Team? | Begründung |
-|-----------|-------------|------------|
-| Full-Stack Feature (BE + FE + Tests) | **Ja** | 3 unabhängige Arbeitsbereiche |
-| Paralleler Code Review (Security + Performance) | **Ja** | Verschiedene Perspektiven gleichzeitig |
-| Großes Refactoring (>5 Files, verschiedene Module) | **Ja** | Unabhängige Module parallel |
-| Single-File Bug Fix | **Nein** | Overhead > Nutzen |
-| Sequentielle Abhängigkeiten | **Nein** | Agents würden aufeinander warten |
-| Gleiches File betroffen | **Nein** | File-Konflikte |
+Ein Subagent ist ein eigenständiger Prozess, der **nur seinen Prompt bekommt** — keinen Kontext aus eurer Session. Er führt seine Aufgabe aus, liefert das Ergebnis zurück, und ist dann weg. Kein Gedächtnis, keine Kommunikation, kein Shared State.
 
-### Token-Kosten Vergleich
+```
+Ihr → "Mach Security Review von backend/routes/"
+       ↓
+   [Subagent startet]
+   - Bekommt NUR diesen Prompt
+   - Hat keinen Kontext aus eurer Session
+   - Liest die Dateien, analysiert, schreibt Report
+   - Liefert Ergebnis zurück
+   - Prozess endet ← fertig, weg
+       ↓
+Ihr ← "3 Findings: SQL Injection in auth.py, ..."
+```
 
-| Ansatz | Wann | Token-Kosten |
-|--------|------|-------------|
-| **Single Session** | Einfache Tasks, sequentielle Arbeit | Niedrig |
-| **Subagents (Task Tool)** | Parallele Recherche, Ergebnis zurück an Haupt-Session | Mittel |
-| **Agent Teams** | Parallele Implementierung, Teammates kommunizieren | **Hoch** (3-5x Single Session) |
+Typischer Einsatz: Parallele Recherche, Code-Analyse, Type-Checking — alles wo das Ergebnis einfach zurückfließen soll.
+
+```
+Nutze parallele Subagents um:
+1. Security Review von backend/app/routes/
+2. Test Coverage Check von frontend/src/hooks/
+3. Type-Check des gesamten Projekts
+Berichte die Ergebnisse, ändere nichts.
+```
+
+### Agent Team — Koordinierte Zusammenarbeit
+
+Ein Agent Team hat einen **Team Lead**, der Tasks erstellt und an **Teammates** verteilt. Die Teammates arbeiten parallel, kommunizieren aber **dauerhaft untereinander** und mit dem Lead. Jeder Teammate hat seinen eigenen Kontext und kann Nachrichten schicken/empfangen.
+
+```
+Team Lead erstellt Task List:
+  ├── Task 1: "Backend API für Deals" → Teammate 1
+  ├── Task 2: "Frontend Komponenten"  → Teammate 2
+  └── Task 3: "Tests schreiben"       → Teammate 3
+
+Teammate 1 → Lead: "API fertig, Endpoint ist POST /api/deals"
+Lead → Teammate 2: "API-Signatur steht, hier die Types..."
+Teammate 2 → Teammate 3: "Komponente fertig, teste bitte DealCard"
+Teammate 3 → Lead: "2 Tests failen, Teammate 1 muss Schema fixen"
+Lead → Teammate 1: "Fix das Schema, Details von Teammate 3..."
+```
+
+**Der entscheidende Unterschied:** Subagents wissen nichts voneinander. Teammates koordinieren sich aktiv — der Lead teilt die Arbeit auf und stellt sicher, dass niemand die gleichen Dateien bearbeitet.
+
+| | Subagent | Agent Team |
+|---|---|---|
+| **Kontext** | Nur der Prompt, kein Session-Kontext | Eigener Kontext + Kommunikation |
+| **Kommunikation** | Keine — Ergebnis zurück und fertig | Dauerhaft untereinander + Lead |
+| **Koordination** | Keine — unabhängig | Lead verteilt Tasks, verhindert Konflikte |
+| **Lebensdauer** | Einmalig, endet nach Aufgabe | Bleibt aktiv bis Lead sie beendet |
+| **Token-Kosten** | Mittel | Hoch (3-5x einer Single Session) |
+| **Typischer Einsatz** | Recherche, Analyse, Reviews | Full-Stack Features, große Refactorings |
+
+### Wann was nutzen
+
+| Situation | Ansatz | Begründung |
+|-----------|--------|------------|
+| Parallele Recherche/Analyse | **Subagents** | Günstig, kein Kontext nötig |
+| Full-Stack Feature (BE + FE + Tests) | **Agent Team** | 3 unabhängige Arbeitsbereiche, müssen kommunizieren |
+| Paralleler Code Review (Security + Performance) | **Subagents** | Unabhängige Ergebnisse, keine Koordination nötig |
+| Großes Refactoring (>5 Files, verschiedene Module) | **Agent Team** | Unabhängige Module, aber Abstimmung nötig |
+| Single-File Bug Fix | **Single Session** | Overhead > Nutzen |
+| Sequentielle Abhängigkeiten | **Single Session** | Agents würden aufeinander warten |
+| Gleiches File betroffen | **Single Session** | File-Konflikte vermeiden |
+
+### Token-Kosten
+
+| Ansatz | Token-Kosten |
+|--------|-------------|
+| **Single Session** | Niedrig |
+| **Subagents (Task Tool)** | Mittel |
+| **Agent Teams** | **Hoch** (3-5x Single Session) |
 
 ### Agent Teams aktivieren
 
@@ -163,12 +219,13 @@ claude-code-starter-kit/
 |   |-- audit-plan-verification.md  Plan-Verifizierung
 |   +-- README.md               Übersicht aller Rules
 |
-|-- skills/              Wiederverwendbare Skills (40+ in 5 Kategorien)
-|   |-- development/            17 Skills
+|-- skills/              Wiederverwendbare Skills (45+ in 5 Kategorien)
+|   |-- development/            18 Skills
 |   |   |-- systematic-debugging/     Hypothesen-basierte Bug-Analyse
 |   |   |-- test-driven-development/  Red-Green-Refactor Workflow
 |   |   |-- bug-pipeline/             Autonome Bug-Fix Pipeline (parallel, max 3 Retries)
 |   |   |-- orchestrate/              Multi-Agent Dispatch mit Scope-Validation
+|   |   |-- dispatching-parallel-agents/  Formalisierte Parallel-Agent Patterns
 |   |   |-- doc-sync/                 Auto-Sync aller Docs mit Code-Stand
 |   |   |-- verification-before-completion/  Pre-Commit Verification
 |   |   |-- software-architecture/    Clean Architecture, DDD
@@ -182,7 +239,7 @@ claude-code-starter-kit/
 |   |   |-- changelog-generator/      Git Commits -> Release Notes
 |   |   |-- test-fixing/              Systematisch Tests fixen
 |   |   +-- using-git-worktrees/      Isolierte Workspaces
-|   |-- testing/              2 Skills (PICT, Playwright)
+|   |-- testing/              3 Skills (PICT, Browser-Testing, Website-Audit)
 |   |-- productivity/         5 Skills
 |   |   |-- wrapup/                   Session-Ende Ritual (6 Phasen)
 |   |   |-- handoff/                  Leichtgewichtige Kontextübergabe
@@ -190,10 +247,10 @@ claude-code-starter-kit/
 |   |   |-- ship-learn-next/          Lerninhalte -> Action Plans
 |   |   +-- tapestry/                 Content Extraction + Planning
 |   |-- documents/            5 Skills (DOCX, XLSX, PDF, PPTX, EPUB)
-|   +-- utilities/            11 Skills (Article Extractor, Connect, CSV, etc.)
+|   +-- utilities/            12 Skills (Article Extractor, Connect, CSV, Varlock, etc.)
 |
-|-- agents/              Spezialisierte Agent-Definitionen (18 Agents)
-|   |-- engineering/          Backend, Frontend, DB-Architektur
+|-- agents/              Spezialisierte Agent-Definitionen (20 Agents)
+|   |-- engineering/          Backend, Frontend, DB, Architektur-Review, Performance
 |   |-- design/               UI, Dashboard, Brand, UX
 |   |-- testing/              QA, Security, API-Testing, Debugging
 |   +-- utility/              Explorer, Historian, Research, Doc-Updater
@@ -335,65 +392,6 @@ NUR Backend-Änderungen.
 
 **Kurze Kontextnotiz ohne Commit:**
 1. `/handoff` (erstellt nur HANDOFF.md, kein Commit/Push)
-
-### Subagents vs. Agent Teams — Der Unterschied
-
-Zwei grundverschiedene Konzepte, die oft verwechselt werden:
-
-**Subagent (Task Tool) — Fire & Forget:**
-
-Ein Subagent ist ein eigenständiger Prozess, der **nur seinen Prompt bekommt** — keinen Kontext aus eurer Session. Er führt seine Aufgabe aus, liefert das Ergebnis zurück, und ist dann weg. Kein Gedächtnis, keine Kommunikation, kein Shared State.
-
-```
-Ihr → "Mach Security Review von backend/routes/"
-       ↓
-   [Subagent startet]
-   - Bekommt NUR diesen Prompt
-   - Hat keinen Kontext aus eurer Session
-   - Liest die Dateien, analysiert, schreibt Report
-   - Liefert Ergebnis zurück
-   - Prozess endet ← fertig, weg
-       ↓
-Ihr ← "3 Findings: SQL Injection in auth.py, ..."
-```
-
-Typischer Einsatz: Parallele Recherche, Code-Analyse, Type-Checking — alles wo das Ergebnis einfach zurückfließen soll.
-
-```
-Nutze parallele Subagents um:
-1. Security Review von backend/app/routes/
-2. Test Coverage Check von frontend/src/hooks/
-3. Type-Check des gesamten Projekts
-Berichte die Ergebnisse, ändere nichts.
-```
-
-**Agent Team — Koordinierte Zusammenarbeit:**
-
-Ein Agent Team hat einen **Team Lead**, der Tasks erstellt und an **Teammates** verteilt. Die Teammates arbeiten parallel, kommunizieren aber **dauerhaft untereinander** und mit dem Lead. Jeder Teammate hat seinen eigenen Kontext und kann Nachrichten schicken/empfangen.
-
-```
-Team Lead erstellt Task List:
-  ├── Task 1: "Backend API für Deals" → Teammate 1
-  ├── Task 2: "Frontend Komponenten"  → Teammate 2
-  └── Task 3: "Tests schreiben"       → Teammate 3
-
-Teammate 1 → Lead: "API fertig, Endpoint ist POST /api/deals"
-Lead → Teammate 2: "API-Signatur steht, hier die Types..."
-Teammate 2 → Teammate 3: "Komponente fertig, teste bitte DealCard"
-Teammate 3 → Lead: "2 Tests failen, Teammate 1 muss Schema fixen"
-Lead → Teammate 1: "Fix das Schema, Details von Teammate 3..."
-```
-
-**Der entscheidende Unterschied:** Subagents wissen nichts voneinander. Teammates koordinieren sich aktiv — der Lead teilt die Arbeit auf und stellt sicher, dass niemand die gleichen Dateien bearbeitet.
-
-| | Subagent | Agent Team |
-|---|---|---|
-| **Kontext** | Nur der Prompt, kein Session-Kontext | Eigener Kontext + Kommunikation |
-| **Kommunikation** | Keine — Ergebnis zurück und fertig | Dauerhaft untereinander + Lead |
-| **Koordination** | Keine — unabhängig | Lead verteilt Tasks, verhindert Konflikte |
-| **Lebensdauer** | Einmalig, endet nach Aufgabe | Bleibt aktiv bis Lead sie beendet |
-| **Token-Kosten** | Mittel | Hoch (3-5x einer Single Session) |
-| **Typischer Einsatz** | Recherche, Analyse, Reviews | Full-Stack Features, große Refactorings |
 
 ---
 

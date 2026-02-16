@@ -1,96 +1,186 @@
 ---
 name: webapp-testing
-description: Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.
-license: Complete terms in LICENSE.txt
+description: Toolkit for interacting with and testing web applications using Claude Chrome (mcp__claude-in-chrome__*). Supports verifying frontend functionality, debugging UI behavior, capturing screenshots, and reading browser logs. Reconnaissance-then-action pattern.
 ---
 
 # Web Application Testing
 
-To test local web applications, write native Python Playwright scripts.
+Test web applications using Claude Chrome browser automation (mcp__claude-in-chrome__*).
 
-**Helper Scripts Available**:
-- `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)
+## When to Use
 
-**Always run scripts with `--help` first** to see usage. DO NOT read the source until you try running the script first and find that a customized solution is abslutely necessary. These scripts can be very large and thus pollute your context window. They exist to be called directly as black-box scripts rather than ingested into your context window.
+- Testing local or deployed web applications
+- Verifying frontend functionality
+- Debugging UI behavior
+- Capturing visual evidence of bugs or features
+- Reading browser console logs and network requests
 
-## Decision Tree: Choosing Your Approach
+## Decision Tree
 
 ```
-User task → Is it static HTML?
-    ├─ Yes → Read HTML file directly to identify selectors
-    │         ├─ Success → Write Playwright script using selectors
-    │         └─ Fails/Incomplete → Treat as dynamic (below)
-    │
-    └─ No (dynamic webapp) → Is the server already running?
-        ├─ No → Run: python scripts/with_server.py --help
-        │        Then use the helper + write simplified Playwright script
-        │
-        └─ Yes → Reconnaissance-then-action:
-            1. Navigate and wait for networkidle
-            2. Take screenshot or inspect DOM
-            3. Identify selectors from rendered state
-            4. Execute actions with discovered selectors
+User task --> Is the app running?
+    |
+    +-- No --> Ask user to start it, or check if URL is accessible
+    |
+    +-- Yes --> Get browser context first
+        |
+        1. tabs_context_mcp (check current tabs)
+        2. tabs_create_mcp (create new tab)
+        3. navigate to app URL
+        4. Reconnaissance-then-action (below)
 ```
 
-## Example: Using with_server.py
+## Setup
 
-To start a server, run `--help` first, then use the helper:
+1. **Check browser state:**
+   ```
+   mcp__claude-in-chrome__tabs_context_mcp
+   ```
 
-**Single server:**
-```bash
-python scripts/with_server.py --server "npm run dev" --port 5173 -- python your_automation.py
-```
+2. **Create a new tab** (never reuse tabs from previous sessions):
+   ```
+   mcp__claude-in-chrome__tabs_create_mcp
+   ```
 
-**Multiple servers (e.g., backend + frontend):**
-```bash
-python scripts/with_server.py \
-  --server "cd backend && python server.py" --port 3000 \
-  --server "cd frontend && npm run dev" --port 5173 \
-  -- python your_automation.py
-```
-
-To create an automation script, include only Playwright logic (servers are managed automatically):
-```python
-from playwright.sync_api import sync_playwright
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True) # Always launch chromium in headless mode
-    page = browser.new_page()
-    page.goto('http://localhost:5173') # Server already running and ready
-    page.wait_for_load_state('networkidle') # CRITICAL: Wait for JS to execute
-    # ... your automation logic
-    browser.close()
-```
+3. **Navigate to the app:**
+   ```
+   mcp__claude-in-chrome__navigate → URL
+   ```
 
 ## Reconnaissance-Then-Action Pattern
 
-1. **Inspect rendered DOM**:
-   ```python
-   page.screenshot(path='/tmp/inspect.png', full_page=True)
-   content = page.content()
-   page.locator('button').all()
-   ```
+**ALWAYS inspect before acting.** Never click blindly.
 
-2. **Identify selectors** from inspection results
+### Step 1: Inspect the Page
 
-3. **Execute actions** using discovered selectors
+```
+mcp__claude-in-chrome__read_page
+```
 
-## Common Pitfall
+Or get full text content:
+```
+mcp__claude-in-chrome__get_page_text
+```
 
-❌ **Don't** inspect the DOM before waiting for `networkidle` on dynamic apps
-✅ **Do** wait for `page.wait_for_load_state('networkidle')` before inspection
+Or take a screenshot for visual inspection:
+```
+mcp__claude-in-chrome__computer → screenshot
+```
 
-## Best Practices
+### Step 2: Identify Targets
 
-- **Use bundled scripts as black boxes** - To accomplish a task, consider whether one of the scripts available in `scripts/` can help. These scripts handle common, complex workflows reliably without cluttering the context window. Use `--help` to see usage, then invoke directly. 
-- Use `sync_playwright()` for synchronous scripts
-- Always close the browser when done
-- Use descriptive selectors: `text=`, `role=`, CSS selectors, or IDs
-- Add appropriate waits: `page.wait_for_selector()` or `page.wait_for_timeout()`
+From the page content, identify:
+- Buttons, links, inputs by their text, role, or CSS selector
+- Form fields and their current values
+- Error messages or status indicators
+- Loading states
 
-## Reference Files
+### Step 3: Execute Actions
 
-- **examples/** - Examples showing common patterns:
-  - `element_discovery.py` - Discovering buttons, links, and inputs on a page
-  - `static_html_automation.py` - Using file:// URLs for local HTML
-  - `console_logging.py` - Capturing console logs during automation
+**Click elements:**
+```
+mcp__claude-in-chrome__computer → click at coordinates
+```
+
+**Fill forms:**
+```
+mcp__claude-in-chrome__form_input → selector + value
+```
+
+**Run JavaScript for complex checks:**
+```
+mcp__claude-in-chrome__javascript_tool → custom JS
+```
+
+### Step 4: Verify Results
+
+After each action:
+1. Take a screenshot or read the page
+2. Check console for errors: `mcp__claude-in-chrome__read_console_messages`
+3. Check network requests: `mcp__claude-in-chrome__read_network_requests`
+4. Verify expected state change
+
+## Common Testing Patterns
+
+### Form Submission Test
+
+```
+1. navigate → form page
+2. read_page → identify form fields
+3. form_input → fill each field
+4. computer → click submit button
+5. read_page → verify success message or redirect
+6. read_console_messages → check for errors
+```
+
+### Navigation Test
+
+```
+1. navigate → start page
+2. read_page → find navigation links
+3. computer → click link
+4. read_page → verify correct page loaded
+5. Repeat for key navigation paths
+```
+
+### Error State Test
+
+```
+1. navigate → form page
+2. computer → click submit without filling required fields
+3. read_page → verify error messages appear
+4. read_console_messages → check for unhandled errors
+```
+
+### API Integration Test
+
+```
+1. navigate → page that makes API calls
+2. read_network_requests → verify API calls made correctly
+3. read_page → verify data rendered from API
+4. read_console_messages → check for fetch errors
+```
+
+### Responsive Test
+
+```
+1. resize_window → mobile dimensions (375x667)
+2. read_page or screenshot → check mobile layout
+3. resize_window → tablet (768x1024)
+4. read_page or screenshot → check tablet layout
+5. resize_window → desktop (1440x900)
+```
+
+## Recording Multi-Step Flows
+
+Use `mcp__claude-in-chrome__gif_creator` to record multi-step interactions:
+- Capture frames before AND after each action
+- Name the file meaningfully (e.g., "login_flow_test.gif")
+
+## Debugging Tips
+
+- **Console errors:** `read_console_messages` with pattern filter for specific logs
+- **Network failures:** `read_network_requests` to see failed API calls
+- **Visual bugs:** `computer → screenshot` for visual evidence
+- **DOM state:** `javascript_tool` to query specific DOM state
+- **React state:** `javascript_tool` to access React DevTools data
+
+## Anti-Patterns
+
+- **Don't** click elements without first inspecting the page
+- **Don't** reuse tab IDs from previous sessions
+- **Don't** trigger JavaScript alerts/confirms/prompts (they block the extension)
+- **Don't** keep retrying the same failing action more than 2-3 times
+- **Do** ask the user for guidance when stuck
+
+## Comparison: Claude Chrome vs. Playwright
+
+| Aspect | Claude Chrome | Playwright (old) |
+|--------|--------------|-----------------|
+| Setup | Chrome extension (already running) | Python + pip install |
+| Speed | Instant (uses existing browser) | Slow (launches headless) |
+| Visibility | See actions in real browser | Headless (invisible) |
+| Auth | Uses existing browser sessions | Must handle auth in code |
+| DevTools | Console + Network access | Limited |
+| Recording | GIF creator built-in | Screenshot scripts needed |
+| Limitation | No parallel tabs | Parallel execution |
