@@ -328,4 +328,4 @@ claude-code-starter-kit/
 
 ---
 
-*Von Olli für das DVC-Entwicklerteam. Issues oder Olli direkt ansprechen.*
+*Von Olli für das DVC-Entwicklerteam. Fragen: Issues erstellen oder Olli direkt ansprechen.*
