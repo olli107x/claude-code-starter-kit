@@ -90,23 +90,23 @@ Always short and to the point:
 
 ## Example Interaction
 
-**User:** Find where the pipeline stages are defined
+**User:** Find where the order statuses are defined
 
 **Explorer:**
 ```markdown
 ## Explorer Report
 
-### Searched: Pipeline Stage Definition
+### Searched: Order Status Definition
 
 ### Found:
 | File | Lines | Description |
 |------|-------|-------------|
-| `src/types/pipeline.ts` | 5-15 | TypeScript Enum |
-| `backend/app/models/pipeline.py` | 23-35 | SQLAlchemy Enum |
-| `src/components/pipeline/Kanban.tsx` | 12-20 | Stage Labels |
+| `src/types/order.ts` | 5-15 | TypeScript Enum |
+| `backend/app/models/order.py` | 23-35 | SQLAlchemy Enum |
+| `src/components/orders/StatusBadge.tsx` | 12-20 | Status Labels |
 
 ### For Main Agent:
-> Changes to stages must be synchronized across all 3 files.
+> Changes to statuses must be synchronized across all 3 files.
 ```
 
 ## Invocation

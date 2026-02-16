@@ -127,7 +127,7 @@ describe('ItemCard', () => {
     render(<ItemCard item={item} />);
 
     expect(screen.getByText('Test Item')).toBeInTheDocument();
-    expect(screen.getByText('1.000 EUR')).toBeInTheDocument();
+    expect(screen.getByText('$1,000.00')).toBeInTheDocument();
   });
 });
 ```

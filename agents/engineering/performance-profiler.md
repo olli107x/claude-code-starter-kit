@@ -105,7 +105,7 @@ items = await db.scalars(
 ```sql
 -- Find missing indexes (check common query patterns)
 -- Look for sequential scans on large tables
-EXPLAIN ANALYZE SELECT * FROM deals WHERE stage = 'negotiation';
+EXPLAIN ANALYZE SELECT * FROM products WHERE status = 'active';
 
 -- Check index usage
 SELECT indexrelname, idx_scan, idx_tup_read
@@ -196,14 +196,14 @@ ORDER BY idx_scan DESC;
 - **Database:** Good / Needs Optimization / Critical
 
 ### Critical Issues
-1. **N+1 query in GET /api/deals** (estimated 50+ extra queries)
-   - Location: services/deal_service.py:45
-   - Fix: Add selectinload(Deal.contacts)
+1. **N+1 query in GET /api/products** (estimated 50+ extra queries)
+   - Location: services/product_service.py:45
+   - Fix: Add selectinload(Product.categories)
    - Impact: ~500ms -> ~50ms
 
 ### Quick Wins
-1. Add index on deals.stage (est. 10x query speedup)
-2. Add React.memo to DealCard (prevent 100+ re-renders)
+1. Add index on products.status (est. 10x query speedup)
+2. Add React.memo to ProductCard (prevent 100+ re-renders)
 3. Parallelize external API calls with asyncio.gather
 
 ### Detailed Findings

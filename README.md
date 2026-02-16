@@ -131,9 +131,9 @@ Team Lead erstellt Task List:
   ├── Task 2: "Frontend"    → Teammate 2
   └── Task 3: "Tests"       → Teammate 3
 
-Teammate 1 → Lead: "API fertig, Endpoint ist POST /api/deals"
+Teammate 1 → Lead: "API fertig, Endpoint ist POST /api/orders"
 Lead → Teammate 2: "API-Signatur steht, hier die Types..."
-Teammate 2 → Teammate 3: "Komponente fertig, teste bitte DealCard"
+Teammate 2 → Teammate 3: "Komponente fertig, teste bitte OrderCard"
 Teammate 3 → Lead: "2 Tests failen, Teammate 1 muss Schema fixen"
 Lead → Teammate 1: "Fix das Schema, Details von Teammate 3..."
 ```

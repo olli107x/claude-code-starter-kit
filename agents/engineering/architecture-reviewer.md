@@ -174,14 +174,14 @@ Backend:
 ### Findings
 
 #### HIGH (must fix)
-1. **Circular dependency between services/deal.py and services/contact.py**
+1. **Circular dependency between services/order.py and services/customer.py**
    - Impact: Fragile imports, hard to test
    - Fix: Extract shared logic to services/shared.py
 
 #### MEDIUM (should fix)
-1. **DealCard component at 350 lines**
+1. **OrderCard component at 350 lines**
    - Impact: Hard to maintain, test
-   - Fix: Extract DealHeader, DealActions, DealMetrics sub-components
+   - Fix: Extract OrderHeader, OrderActions, OrderMetrics sub-components
 
 #### LOW (nice to have)
 1. **Inconsistent error handling in API routes**

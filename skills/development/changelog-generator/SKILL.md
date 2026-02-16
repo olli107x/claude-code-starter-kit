@@ -69,16 +69,16 @@ Categorize by prefix:
 - **auth:** JWT token format changed - clients must update (#123)
 
 ### New Features
-- **deals:** Add pipeline stage filtering with drag-and-drop (#118)
-- **contacts:** Bulk import from CSV with deduplication (#115)
+- **products:** Add category filtering with drag-and-drop (#118)
+- **orders:** Bulk import from CSV with deduplication (#115)
 - **dashboard:** Real-time KPI cards with sparkline charts (#112)
 
 ### Bug Fixes
 - **auth:** Fix session timeout not redirecting to login (#120)
-- **deals:** Fix currency formatting for EUR values (#117)
+- **products:** Fix price formatting for decimal values (#117)
 
 ### Performance
-- **api:** Reduce deal list query time by 60% with index optimization (#119)
+- **api:** Reduce product list query time by 60% with index optimization (#119)
 ```
 
 **Developer-facing format** (with `--dev` flag):
@@ -89,21 +89,21 @@ Categorize by prefix:
 ## [1.3.0] - 2024-03-15
 
 ### Features
-- feat(deals): add pipeline stage filtering (#118) - @oliver
-- feat(contacts): bulk CSV import with dedup (#115) - @oliver
+- feat(products): add category filtering (#118) - @dev
+- feat(orders): bulk CSV import with dedup (#115) - @dev
 
 ### Fixes
-- fix(auth): session timeout redirect (#120) - @oliver
-- fix(deals): EUR currency formatting (#117) - @oliver
+- fix(auth): session timeout redirect (#120) - @dev
+- fix(products): price formatting for decimals (#117) - @dev
 
 ### Refactoring
-- refactor(hooks): extract common fetch logic (#116) - @oliver
+- refactor(hooks): extract common fetch logic (#116) - @dev
 
 ### Tests
-- test(deals): add pipeline filter tests (#121) - @oliver
+- test(products): add category filter tests (#121) - @dev
 
 ### Chores
-- chore(deps): update React to 18.3 (#114) - @oliver
+- chore(deps): update React to 18.3 (#114) - @dev
 ```
 
 ### Step 4: Smart Grouping
@@ -111,7 +111,7 @@ Categorize by prefix:
 Group related commits:
 
 1. Parse scope from `type(scope):` format
-2. Group by scope (deals, auth, contacts, etc.)
+2. Group by scope (products, auth, orders, etc.)
 3. Within each scope, order: breaking > feat > fix > perf
 4. Exclude internal commits (test, chore, style) from user-facing notes
 
