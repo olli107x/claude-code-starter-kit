@@ -1,0 +1,190 @@
+# [Projektname]
+
+> [Kurzbeschreibung des Projekts -- was macht es, fuer wen, warum]
+
+---
+
+## Team
+
+| Rolle | Name |
+|-------|------|
+| [z.B. Lead Developer] | [Name] |
+| [z.B. Backend Developer] | [Name] |
+| [z.B. Frontend Developer] | [Name] |
+
+---
+
+## Tech Stack
+
+- **Backend:** [z.B. Python 3.11 / FastAPI / SQLAlchemy]
+- **Frontend:** [z.B. React 18 / TypeScript 5 / Vite / TailwindCSS]
+- **Database:** [z.B. PostgreSQL 15 / Supabase]
+- **Auth:** [z.B. Supabase Auth / NextAuth / Custom JWT]
+- **Hosting:** [z.B. Vercel (Frontend) / Railway (Backend) / AWS]
+- **CI/CD:** [z.B. GitHub Actions]
+
+---
+
+## Projektstruktur
+
+```
+[Projektname]/
+|-- backend/
+|   |-- app/
+|   |   |-- api/           API Routes
+|   |   |-- models/        SQLAlchemy Models
+|   |   |-- schemas/       Pydantic Schemas
+|   |   |-- services/      Business Logic
+|   |   +-- core/          Config, Auth, DB
+|   |-- tests/
+|   +-- requirements.txt
+|
+|-- frontend/
+|   |-- src/
+|   |   |-- components/    React Components
+|   |   |-- hooks/         Custom Hooks
+|   |   |-- pages/         Page Components
+|   |   |-- lib/           Utilities, API Client
+|   |   +-- types/         TypeScript Types
+|   +-- package.json
+|
+|-- docs/                  Dokumentation
+|-- CLAUDE.md              Diese Datei
++-- PROGRESS.md            Aktueller Fortschritt
+```
+
+---
+
+## Wichtige Dateien
+
+| Datei | Beschreibung |
+|-------|-------------|
+| [z.B. `backend/app/core/config.py`] | [Zentrale Konfiguration, Env-Variablen] |
+| [z.B. `backend/app/core/database.py`] | [Datenbank-Verbindung, Session-Management] |
+| [z.B. `frontend/src/lib/api.ts`] | [API Client, Fetch-Wrapper] |
+| [z.B. `docs/ARCHITECTURE.md`] | [Architektur-Uebersicht] |
+
+---
+
+## Dokumentation
+
+- Lies IMMER zuerst [z.B. `docs/ARCHITECTURE.md`] bevor du ein neues Feature anfaengst
+- API-Dokumentation: [z.B. `docs/API.md` oder `/docs` Endpoint]
+- Datenbank-Schema: [z.B. `docs/DATABASE.md` oder Migrations-Ordner]
+
+---
+
+## Neues Feature Checkliste
+
+### Backend
+
+1. **Model** erstellen/erweitern (`backend/app/models/`)
+2. **Schema** definieren -- Request und Response (`backend/app/schemas/`)
+3. **Service** implementieren -- Business Logic (`backend/app/services/`)
+4. **Route** erstellen -- API Endpoint (`backend/app/api/`)
+5. **Tests** schreiben (`backend/tests/`)
+
+### Frontend
+
+1. **Types** definieren (`frontend/src/types/`)
+2. **API Hook** erstellen (`frontend/src/hooks/`)
+3. **Page/Component** implementieren (`frontend/src/pages/` oder `frontend/src/components/`)
+4. **Tests** schreiben (co-located: `*.test.tsx`)
+
+---
+
+## Coding Konventionen
+
+### Backend (Python)
+
+- **Formatter:** [z.B. Black / Ruff]
+- **Linter:** [z.B. Ruff / Flake8]
+- **Type Checker:** [z.B. mypy / pyright]
+- **Import Order:** stdlib, third-party, local (isort)
+- **Geld-Betraege:** Immer `Decimal`, niemals `float`
+
+### Frontend (TypeScript)
+
+- **Formatter:** [z.B. Prettier]
+- **Linter:** [z.B. ESLint]
+- **State Management:** [z.B. React Query / Zustand / Redux]
+- **Styling:** [z.B. TailwindCSS / CSS Modules]
+- **API Params:** Kein `undefined` in API-Parametern -- wenn kein Wert, nicht senden
+
+---
+
+## Definition of Done
+
+- [ ] Feature funktioniert wie beschrieben
+- [ ] Tests geschrieben (Happy Path + Error Case)
+- [ ] Keine `console.log` / `print()` im Code
+- [ ] Error States implementiert (Fehlermeldungen fuer User)
+- [ ] Loading States implementiert (Spinner/Skeleton)
+- [ ] `npm test` / `pytest` bestanden
+- [ ] TypeScript Types vollstaendig (kein `any`)
+- [ ] Dokumentation aktualisiert (wenn API/Schema sich aendert)
+- [ ] Code reviewed (oder Self-Review durchgefuehrt)
+- [ ] Keine hardcoded Secrets im Code
+
+---
+
+## Security
+
+- **Keine Secrets im Code** -- nutze `.env` und Umgebungsvariablen
+- **Parameterisierte Queries** -- kein String-Formatting fuer SQL
+- **Input-Validation** an allen API-Endpoints (Pydantic Schemas)
+- **Auth-Checks** auf allen geschuetzten Routen
+- **CORS** korrekt konfiguriert (nicht `allow_origins=["*"]` in Production)
+
+---
+
+## Umgebungsvariablen
+
+| Variable | Beschreibung | Beispiel |
+|----------|-------------|---------|
+| [z.B. `DATABASE_URL`] | [Datenbank-Verbindung] | [z.B. `postgresql://...`] |
+| [z.B. `API_KEY`] | [Externer Service] | [z.B. `sk-...`] |
+| [z.B. `FRONTEND_URL`] | [Frontend-URL fuer CORS] | [z.B. `https://app.example.com`] |
+
+---
+
+## Haeufige Befehle
+
+```bash
+# Backend starten
+[z.B. cd backend && uvicorn app.main:app --reload]
+
+# Frontend starten
+[z.B. cd frontend && npm run dev]
+
+# Backend Tests
+[z.B. cd backend && pytest -v]
+
+# Frontend Tests
+[z.B. cd frontend && npm test]
+
+# Datenbank Migration
+[z.B. cd backend && alembic upgrade head]
+```
+
+---
+
+## Session Handoff
+
+Wenn du die Session beendest oder eine laengere Pause machst:
+
+1. **PROGRESS.md aktualisieren** -- Was wurde gemacht, was steht noch aus
+2. **Aenderungen committen** -- Auch Work-in-Progress (als `wip:` Commit)
+3. **Handoff-Notizen** bei komplexen Tasks -- Was war der letzte Stand, welche Entscheidungen wurden getroffen, wo gibt es offene Fragen
+
+---
+
+## Bekannte Probleme / Workarounds
+
+| Problem | Workaround |
+|---------|------------|
+| [z.B. Hot Reload funktioniert nicht mit Docker] | [z.B. `--reload-dir` Flag nutzen] |
+
+---
+
+*Diese Datei ist der zentrale Kontext fuer Claude Code. Halte sie aktuell!*

@@ -1,0 +1,113 @@
+#!/bin/bash
+# Pre-Push Hook (Extended with Claude Agents)
+# Installation: cp pre-push .git/hooks/ && chmod +x .git/hooks/pre-push
+
+echo "Running Pre-Push Review..."
+
+# Get changed files
+CHANGED_FILES=$(git diff --name-only HEAD~1..HEAD 2>/dev/null || git diff --name-only HEAD)
+
+# Categorize changes
+HAS_FRONTEND=false
+HAS_BACKEND=false
+HAS_DB=false
+
+for file in $CHANGED_FILES; do
+    case "$file" in
+        src/*.tsx|src/*.ts|frontend/*)
+            HAS_FRONTEND=true
+            ;;
+        app/*.py|backend/*.py)
+            HAS_BACKEND=true
+            ;;
+        *migration*|*models.py|*schema*)
+            HAS_DB=true
+            ;;
+    esac
+done
+
+echo ""
+echo "Changes detected:"
+echo "   Frontend: $HAS_FRONTEND"
+echo "   Backend: $HAS_BACKEND"
+echo "   Database: $HAS_DB"
+echo ""
+
+# Build agent list based on changes
+# Core agents always included
+AGENTS="testing/security-reviewer,testing/qa-engineer"
+
+# Situational agents based on file types
+if [ "$HAS_FRONTEND" = true ]; then
+    AGENTS="$AGENTS,design/ui-designer,design/ux-polisher"
+fi
+
+if [ "$HAS_DB" = true ]; then
+    AGENTS="$AGENTS,engineering/db-architect"
+fi
+
+echo "Recommended agents: $AGENTS"
+echo ""
+
+# Interactive prompt
+echo "Options:"
+echo "  y = Run agent review (blocking)"
+echo "  b = Run in background, continue push"
+echo "  s = Skip review, just push"
+echo "  n = Abort push"
+echo ""
+read -p "Choice? (y/b/s/n) " -n 1 -r
+echo ""
+
+case $REPLY in
+    y|Y)
+        echo ""
+        echo "Running agent review (this may take a moment)..."
+        echo "---------------------------------------------------"
+
+        REVIEW_PROMPT="Pre-push review for these files:
+
+$(echo "$CHANGED_FILES" | head -20)
+
+Run parallel review:
+1. @security-reviewer: Check for vulnerabilities, auth issues
+2. @qa-engineer: Check test coverage, edge cases
+
+Give consolidated verdict: APPROVE / MINOR ISSUES / BLOCK PUSH"
+
+        claude --agents "$AGENTS" "$REVIEW_PROMPT"
+
+        echo ""
+        echo "---------------------------------------------------"
+        read -p "Proceed with push after review? (y/n) " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Push aborted."
+            exit 1
+        fi
+        ;;
+    b|B)
+        echo ""
+        echo "Starting background review..."
+
+        REVIEW_PROMPT="Background pre-push review for: $CHANGED_FILES"
+        claude --agents "$AGENTS" "$REVIEW_PROMPT" &
+
+        echo "Review running in background (PID: $!)"
+        ;;
+    s|S)
+        echo "Skipping agent review..."
+        ;;
+    n|N)
+        echo "Push aborted."
+        exit 1
+        ;;
+    *)
+        echo "Invalid option. Aborting."
+        exit 1
+        ;;
+esac
+
+echo ""
+echo "Proceeding with push..."
+exit 0
