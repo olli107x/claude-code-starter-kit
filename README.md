@@ -336,9 +336,29 @@ NUR Backend-Änderungen.
 **Kurze Kontextnotiz ohne Commit:**
 1. `/handoff` (erstellt nur HANDOFF.md, kein Commit/Push)
 
-### Subagents vs. Agent Teams
+### Subagents vs. Agent Teams — Der Unterschied
 
-**Subagents** (über das Task Tool) sind günstiger und reichen für die meisten Fälle:
+Zwei grundverschiedene Konzepte, die oft verwechselt werden:
+
+**Subagent (Task Tool) — Fire & Forget:**
+
+Ein Subagent ist ein eigenständiger Prozess, der **nur seinen Prompt bekommt** — keinen Kontext aus eurer Session. Er führt seine Aufgabe aus, liefert das Ergebnis zurück, und ist dann weg. Kein Gedächtnis, keine Kommunikation, kein Shared State.
+
+```
+Ihr → "Mach Security Review von backend/routes/"
+       ↓
+   [Subagent startet]
+   - Bekommt NUR diesen Prompt
+   - Hat keinen Kontext aus eurer Session
+   - Liest die Dateien, analysiert, schreibt Report
+   - Liefert Ergebnis zurück
+   - Prozess endet ← fertig, weg
+       ↓
+Ihr ← "3 Findings: SQL Injection in auth.py, ..."
+```
+
+Typischer Einsatz: Parallele Recherche, Code-Analyse, Type-Checking — alles wo das Ergebnis einfach zurückfließen soll.
+
 ```
 Nutze parallele Subagents um:
 1. Security Review von backend/app/routes/
@@ -347,7 +367,33 @@ Nutze parallele Subagents um:
 Berichte die Ergebnisse, ändere nichts.
 ```
 
-**Agent Teams** nur wenn Agents untereinander kommunizieren müssen (z.B. Backend-Agent muss Frontend-Agent die API-Signatur mitteilen).
+**Agent Team — Koordinierte Zusammenarbeit:**
+
+Ein Agent Team hat einen **Team Lead**, der Tasks erstellt und an **Teammates** verteilt. Die Teammates arbeiten parallel, kommunizieren aber **dauerhaft untereinander** und mit dem Lead. Jeder Teammate hat seinen eigenen Kontext und kann Nachrichten schicken/empfangen.
+
+```
+Team Lead erstellt Task List:
+  ├── Task 1: "Backend API für Deals" → Teammate 1
+  ├── Task 2: "Frontend Komponenten"  → Teammate 2
+  └── Task 3: "Tests schreiben"       → Teammate 3
+
+Teammate 1 → Lead: "API fertig, Endpoint ist POST /api/deals"
+Lead → Teammate 2: "API-Signatur steht, hier die Types..."
+Teammate 2 → Teammate 3: "Komponente fertig, teste bitte DealCard"
+Teammate 3 → Lead: "2 Tests failen, Teammate 1 muss Schema fixen"
+Lead → Teammate 1: "Fix das Schema, Details von Teammate 3..."
+```
+
+**Der entscheidende Unterschied:** Subagents wissen nichts voneinander. Teammates koordinieren sich aktiv — der Lead teilt die Arbeit auf und stellt sicher, dass niemand die gleichen Dateien bearbeitet.
+
+| | Subagent | Agent Team |
+|---|---|---|
+| **Kontext** | Nur der Prompt, kein Session-Kontext | Eigener Kontext + Kommunikation |
+| **Kommunikation** | Keine — Ergebnis zurück und fertig | Dauerhaft untereinander + Lead |
+| **Koordination** | Keine — unabhängig | Lead verteilt Tasks, verhindert Konflikte |
+| **Lebensdauer** | Einmalig, endet nach Aufgabe | Bleibt aktiv bis Lead sie beendet |
+| **Token-Kosten** | Mittel | Hoch (3-5x einer Single Session) |
+| **Typischer Einsatz** | Recherche, Analyse, Reviews | Full-Stack Features, große Refactorings |
 
 ---
 
